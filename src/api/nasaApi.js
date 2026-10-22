@@ -1,8 +1,5 @@
 const BASE_URL = 'https://images-api.nasa.gov';
 
-/**
- * Transforme un item brut de l'API NASA en objet simple pour les composants.
- */
 export function transformItem(item) {
   const data = item.data?.[0] || {};
   const previewLink = item.links?.find((link) => link.rel === 'preview');
@@ -18,9 +15,6 @@ export function transformItem(item) {
   };
 }
 
-/**
- * Transforme la réponse complète de /search en objet simple.
- */
 export function transformSearchResponse(json) {
   const collection = json.collection || {};
   const items = (collection.items || []).map(transformItem);
@@ -29,9 +23,6 @@ export function transformSearchResponse(json) {
   return { items, totalHits, hasNext };
 }
 
-/**
- * Recherche dans la photothèque NASA.
- */
 export async function searchMedia({ query, page = 1, mediaType, yearStart, yearEnd }) {
   const params = new URLSearchParams();
   const hasQuery = query && query.trim();
@@ -43,22 +34,16 @@ export async function searchMedia({ query, page = 1, mediaType, yearStart, yearE
   if (yearEnd) params.append('year_end', yearEnd);
   params.append('page', String(page));
 
-  // L'API exige au moins un critère
   if (!hasQuery && !hasFilter) {
     params.append('q', 'space');
   }
 
   const response = await fetch(`${BASE_URL}/search?${params.toString()}`);
-  if (!response.ok) {
-    throw new Error(`Erreur API (${response.status})`);
-  }
+  if (!response.ok) throw new Error(`Erreur API (${response.status})`);
   const json = await response.json();
   return transformSearchResponse(json);
 }
 
-/**
- * Récupère un média précis par son nasa_id.
- */
 export async function getMediaById(nasaId) {
   const response = await fetch(`${BASE_URL}/search?nasa_id=${encodeURIComponent(nasaId)}`);
   if (!response.ok) throw new Error(`Erreur API (${response.status})`);
@@ -68,9 +53,6 @@ export async function getMediaById(nasaId) {
   return transformItem(items[0]);
 }
 
-/**
- * Récupère la liste des fichiers disponibles pour un média.
- */
 export async function getAssetManifest(nasaId) {
   const response = await fetch(`${BASE_URL}/asset/${encodeURIComponent(nasaId)}`);
   if (!response.ok) throw new Error('Impossible de récupérer les fichiers');
@@ -80,10 +62,6 @@ export async function getAssetManifest(nasaId) {
   );
 }
 
-/**
- * Choisit la meilleure image dans la liste des assets.
- * Priorité : ~large, ~medium, ~orig (mais pas trop lourde), sinon première jpg.
- */
 export function pickBestImage(assets, fallbackThumb) {
   if (!assets || !assets.length) return fallbackThumb;
   const priorities = ['~large.jpg', '~medium.jpg', '~orig.jpg', '~small.jpg'];
@@ -95,9 +73,6 @@ export function pickBestImage(assets, fallbackThumb) {
   return anyJpg || fallbackThumb;
 }
 
-/**
- * Choisit le meilleur fichier vidéo/audio.
- */
 export function pickPlayable(assets, kind) {
   if (!assets || !assets.length) return null;
   if (kind === 'video') {
