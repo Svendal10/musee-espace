@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import FuturisticBackground from './components/FuturisticBackground';
-import NavBar from './components/Navbar';
+import NavBar from './components/NavBar';
 import GalleryPage from './pages/GalleryPage';
 import MediaDetailPage from './pages/MediaDetailPage';
 import RoomsPage from './pages/RoomsPage';
 import RoomDetailPage from './pages/RoomDetailPage';
 import FavoritesPage from './pages/FavoritesPage';
-import ExhibitionsPage from './pages/ExhibitionPage';
+import ExhibitionsPage from './pages/ExhibitionsPage';
 import ExhibitionDetailPage from './pages/ExhibitionDetailPage';
 import SharedExhibitionPage from './pages/SharedExhibitionPage';
 import VisitPage from './pages/VisitPage';
@@ -19,6 +19,7 @@ export default function App() {
       <FuturisticBackground />
       <div style={{ position: 'relative', minHeight: '100vh' }}>
         <Routes>
+          
           <Route path="/exhibitions/:id/visit" element={<VisitPage />} />
           <Route
             path="*"

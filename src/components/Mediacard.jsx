@@ -22,6 +22,7 @@ export default function MediaCard({ media, index = 0 }) {
         background: 'var(--glass)',
         border: '1px solid var(--border)',
         backdropFilter: 'blur(10px)',
+        transition: 'box-shadow 0.3s',
       }}
     >
       <Link to={`/media/${media.id}`} style={{ display: 'block', color: 'inherit' }}>
@@ -39,12 +40,10 @@ export default function MediaCard({ media, index = 0 }) {
                 height: '100%',
                 display: 'grid',
                 placeItems: 'center',
-                background: 'linear-gradient(135deg, #1a1a3a, #0a0a20)',
-                fontSize: '3rem',
-                color: 'var(--cyan)',
+                color: 'var(--text-dim)',
               }}
             >
-              {typeIcon[media.mediaType] || '🖼️'}
+              Pas d'aperçu
             </div>
           )}
         </div>
@@ -68,6 +67,7 @@ export default function MediaCard({ media, index = 0 }) {
           top: 10,
           right: 10,
           padding: '0.3rem 0.55rem',
+          borderRadius: 8,
           fontSize: '1rem',
           background: fav ? 'rgba(255,43,214,0.2)' : 'rgba(0,0,0,0.5)',
           borderColor: fav ? 'var(--pink)' : 'var(--border)',
