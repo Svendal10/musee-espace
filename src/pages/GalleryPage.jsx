@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import MediaCard from '../components/Mediacard';
-import Loader from '../components/Loader';
+import Loader from '../components/loader';
 import ErrorState from '../components/errorState';
 import { useMediaSearch } from '../hooks/useMediaSearch';
 
@@ -51,7 +51,7 @@ export default function GalleryPage() {
         onSubmit={handleSubmit}
         style={{
           display: 'grid',
-          gridTemplateColumns: '2fr 1fr 1fr 1fr auto',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
           gap: '0.6rem',
           marginBottom: '2rem',
         }}

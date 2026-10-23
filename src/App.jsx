@@ -11,7 +11,7 @@ import ExhibitionDetailPage from './pages/ExhibitionDetailPage';
 import SharedExhibitionPage from './pages/SharedExhibitionPage';
 import VisitPage from './pages/VisitPage';
 import GamePage from './pages/GamePage';
-import NotFoundPage from './pages/NotFoundPage';
+import NotFoundPage from './pages/NotfoundPage';
 
 export default function App() {
   return (
@@ -19,7 +19,7 @@ export default function App() {
       <FuturisticBackground />
       <div style={{ position: 'relative', minHeight: '100vh' }}>
         <Routes>
-          {/* Routes plein écran sans NavBar */}
+          
           <Route path="/exhibitions/:id/visit" element={<VisitPage />} />
           <Route
             path="*"
