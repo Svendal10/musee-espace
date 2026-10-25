@@ -52,15 +52,23 @@ export async function getMediaById(nasaId) {
   if (!items.length) throw new Error('Média introuvable');
   return transformItem(items[0]);
 }
-
 export async function getAssetManifest(nasaId) {
   const response = await fetch(`${BASE_URL}/asset/${encodeURIComponent(nasaId)}`);
   if (!response.ok) throw new Error('Impossible de récupérer les fichiers');
-  const files = await response.json();
-  return files.map((url) =>
-    url.startsWith('http://') ? url.replace('http://', 'https://') : url
-  );
+  
+  const json = await response.json();
+  
+  // L'API NASA renvoie parfois un objet, parfois un tableau
+  const items = json?.collection?.items || json;
+  
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item) => (typeof item === 'string' ? item : item?.href))
+    .filter(Boolean)
+    .map((url) => (url.startsWith('http://') ? url.replace('http://', 'https://') : url));
 }
+
 
 export function pickBestImage(assets, fallbackThumb) {
   if (!assets || !assets.length) return fallbackThumb;

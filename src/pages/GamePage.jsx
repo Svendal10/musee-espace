@@ -21,7 +21,7 @@ export default function GamePage() {
           .filter((m) => m.year && m.thumbnail)
           .slice(0, 10);
         setImages(valid);
-        if (valid[0]) setGuess(valid[0].year);
+        setGuess(1990); 
       })
       .finally(() => !cancelled && setLoading(false));
     return () => { cancelled = true; };
@@ -45,7 +45,7 @@ export default function GamePage() {
       return;
     }
     setIndex((i) => i + 1);
-    setGuess(images[index + 1].year);
+    setGuess(1990); // On remet le curseur au milieu pour la nouvelle image
     setRoundResult(null);
   };
 
@@ -54,7 +54,7 @@ export default function GamePage() {
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <h1>Partie terminée !</h1>
         <p style={{ fontSize: '1.5rem', margin: '1rem 0' }}>Score : {score} / {images.length * 100}</p>
-        <button onClick={() => { setIndex(0); setScore(0); setGuess(images[0].year); setRoundResult(null); }}>
+        <button onClick={() => { setIndex(0); setScore(0); setGuess(1990); setRoundResult(null); }}>
           Rejouer
         </button>
       </div>

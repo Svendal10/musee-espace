@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { formatDate } from '../utils/format';
 import { useFavorites } from '../context/FavoritesContext';
+import { useExhibitions } from '../context/ExhibitionsContext';
 
 const typeIcon = { image: '🖼️', video: '🎬', audio: '🔊' };
 
 export default function MediaCard({ media, index = 0 }) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { exhibitions, addItem } = useExhibitions();
+  const [showExpoMenu, setShowExpoMenu] = useState(false);
   const fav = isFavorite(media.id);
 
   return (
@@ -22,7 +26,6 @@ export default function MediaCard({ media, index = 0 }) {
         background: 'var(--glass)',
         border: '1px solid var(--border)',
         backdropFilter: 'blur(10px)',
-        transition: 'box-shadow 0.3s',
       }}
     >
       <Link to={`/media/${media.id}`} style={{ display: 'block', color: 'inherit' }}>
@@ -40,10 +43,12 @@ export default function MediaCard({ media, index = 0 }) {
                 height: '100%',
                 display: 'grid',
                 placeItems: 'center',
-                color: 'var(--text-dim)',
+                background: 'linear-gradient(135deg, #1a1a3a, #0a0a20)',
+                fontSize: '3rem',
+                color: 'var(--cyan)',
               }}
             >
-              Pas d'aperçu
+              {typeIcon[media.mediaType] || '🖼️'}
             </div>
           )}
         </div>
@@ -56,6 +61,8 @@ export default function MediaCard({ media, index = 0 }) {
           </p>
         </div>
       </Link>
+
+      {/* Bouton Favori (Étoile) */}
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -67,7 +74,6 @@ export default function MediaCard({ media, index = 0 }) {
           top: 10,
           right: 10,
           padding: '0.3rem 0.55rem',
-          borderRadius: 8,
           fontSize: '1rem',
           background: fav ? 'rgba(255,43,214,0.2)' : 'rgba(0,0,0,0.5)',
           borderColor: fav ? 'var(--pink)' : 'var(--border)',
@@ -75,6 +81,79 @@ export default function MediaCard({ media, index = 0 }) {
       >
         {fav ? '★' : '☆'}
       </button>
+
+      {/* Bouton Ajouter à une exposition (+) */}
+      <div style={{ position: 'absolute', top: 50, right: 10 }}>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setShowExpoMenu(!showExpoMenu);
+          }}
+          title="Ajouter à une exposition"
+          style={{
+            padding: '0.3rem 0.55rem',
+            fontSize: '1rem',
+            background: 'rgba(0,0,0,0.5)',
+          }}
+        >
+          +
+        </button>
+
+        {showExpoMenu && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '100%',
+              right: 0,
+              marginTop: 5,
+              background: '#111',
+              border: '1px solid var(--border)',
+              borderRadius: 8,
+              padding: '0.5rem',
+              zIndex: 10,
+              minWidth: 180,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+            }}
+          >
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.5rem', marginLeft: '0.2rem' }}>
+              Ajouter à :
+            </p>
+            {exhibitions.length === 0 ? (
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+                Aucune expo. Créez-en une !
+              </p>
+            ) : (
+              exhibitions.map((ex) => (
+                <button
+                  key={ex.id}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addItem(ex.id, media);
+                    setShowExpoMenu(false);
+                    // Optionnel : feedback visuel
+                    alert(`Ajouté à "${ex.name}" !`);
+                  }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '0.4rem 0.6rem',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text)',
+                    fontSize: '0.85rem',
+                    borderRadius: 4,
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = 'rgba(0,240,255,0.1)'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                >
+                  {ex.name}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
     </motion.div>
   );
 }
